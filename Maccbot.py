@@ -226,9 +226,28 @@ async def standings(ctx, classname='all', num=10):
         print(f"{ctx.author.nick}: {ctx.message.content}")
     else:
         print(f"{ctx.author}: {ctx.message.content}")
+
+    modified = os.path.getmtime(r"MonolithDKP.lua")
+    modified = time.strftime('%m-%d-%y', time.localtime(int(modified)))
+
+    newline = "\n"
+    await ctx.send(f"""Table Updated: {str(modified)}\n```{newline.join(standings_old())}```""")
+
+
+def standings_new(classname="all", num=10) -> List[str]:
+    def _format_dkp_entry(entry: DKPEntry) -> str:
+        return f"{entry.dkp:03}dkp - {entry.player} - {entry.class_.capitalize()}"
+
+    dkp_table = get_dkp_table()
+
+    if classname != 'all':
+        dkp_table = [x for x in dkp_table if x.class_.lower() == classname.lower()]
+
+    return sorted([_format_dkp_entry(e) for e in dkp_table], reverse=True)[:num]
+
+
+def standings_old(classname="all", num=10) -> List[str]:
     with open(r"MonolithDKP.lua", 'r') as f:
-        modified = os.path.getmtime(r"MonolithDKP.lua")
-        modified = time.strftime('%m-%d-%y', time.localtime(int(modified)))
         current = []
         player_class = []
         player = []
@@ -265,13 +284,7 @@ async def standings(ctx, classname='all', num=10):
 
         playerdkp = sorted(playerdkp, reverse=True)
 
-        newline = "\n"
-            
-        await ctx.send(f"""Table Updated: {str(modified)}\n```{newline.join(playerdkp[:num])}```""")
-
-
-
-
+    return playerdkp
 
     
 @bot.command()
