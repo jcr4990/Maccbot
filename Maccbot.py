@@ -5,7 +5,6 @@ import requests
 import re
 import os
 from datetime import datetime, timedelta
-from bot_token import TOKEN
 
 
 bot = commands.Bot(command_prefix = '!')
@@ -484,7 +483,7 @@ async def on_ready():
     print('----------------')
 
 
+if __name__ == '__main__':
+    from bot_token import TOKEN
 
-
-
-bot.run(TOKEN)
+    bot.run(TOKEN)
