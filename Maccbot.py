@@ -1,3 +1,6 @@
+from dataclasses import dataclass
+import lupa
+from lupa import LuaRuntime
 import time
 from discord.ext import commands
 import asyncio
@@ -193,6 +196,28 @@ async def frank(ctx):
     else:
         print(f"{ctx.author}: {ctx.message.content}")
     await ctx.send('https://streamable.com/5he71')
+
+
+@dataclass
+class DKPEntry:
+    player: str
+    dkp: int
+    class_: str  # use enum?
+
+
+def get_dkp_table():
+    dkp_table = []
+
+    lua = LuaRuntime(unpack_returned_tuples=True)
+    with open("MonolithDKP.lua", "r") as f:
+        dkp_table_re = re.compile(r"MonDKP_DKPTable\s+=\s+?(.+?)(?=MonDKP_)", re.DOTALL)
+        m = dkp_table_re.search(f.read())
+        table = lua.eval(m.group(1))
+
+    for entry in table.values():
+        dkp_table.append(DKPEntry(player=entry["player"], dkp=entry["dkp"], class_=entry["class"]))
+
+    return dkp_table
 
 
 @bot.command()
