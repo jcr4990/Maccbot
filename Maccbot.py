@@ -4,7 +4,6 @@ import asyncio
 import requests
 import re
 import os
-import threading
 from datetime import datetime, timedelta
 from bot_token import TOKEN
 
@@ -234,7 +233,7 @@ async def standings(ctx, classname='all', num=10):
 
         
         if len(player) == len(current) and len(player) == len(player_class):
-            for i, nada in enumerate(player):
+            for i, _ in enumerate(player):
                 while len(current[i]) < 3:
                     current[i] = f"0{current[i]}"
                 if classname == 'all' or classname.lower() in player_class[i].lower():
@@ -308,7 +307,7 @@ async def item(ctx, *, item):
 
 
         data = []
-        for i, itemname in enumerate(lootlist):
+        for i, _ in enumerate(lootlist):
 
             if len(costlist[i].strip()) < 2:
                 costlist[i] = f'0{costlist[i].strip()}'
@@ -417,22 +416,16 @@ async def dkp(ctx, user):
         modified = time.strftime('%m-%d-%y', time.localtime(int(modified)))
         current = []
         player_class = []
-        lifetime = []
         player = []
         spent = []
         dkpflag = 0
         
         for line in f:
-            if "MonDKP_Loot" in line:
-                lootflag = 1
             if "MonDKP_DKPTable" in line:
                 dkpflag = 1
                 lootflag = 0
             if "MonDKP_DKPHistory" in line:
                 dkpflag = 0
-                historyflag = 1
-            if "MonDKP_MinBids" in line:
-                historyflag = 0
 
             if dkpflag == 1:
                 if '["dkp"]' in line:
