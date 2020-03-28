@@ -230,11 +230,7 @@ async def standings(ctx, classname='all', num=10):
 
 
         if len(player) == len(current) and len(player) == len(player_class):
-<<<<<<< HEAD
-            for i in range(len(player)):
-=======
             for i, _ in enumerate(player):
->>>>>>> 64984c0e5209ee73232c009c184b1f8e5d16fffc
                 while len(current[i]) < 3:
                     current[i] = f"0{current[i]}"
                 if classname == 'all' or classname.lower() in player_class[i].lower():
@@ -307,11 +303,7 @@ async def item(ctx, *, item):
 
 
         data = []
-<<<<<<< HEAD
-        for i in range(len(lootlist)):
-=======
         for i, _ in enumerate(lootlist):
->>>>>>> 64984c0e5209ee73232c009c184b1f8e5d16fffc
 
             if len(costlist[i].strip()) < 2:
                 costlist[i] = f'0{costlist[i].strip()}'
