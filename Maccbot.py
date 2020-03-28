@@ -1,21 +1,19 @@
 import time
-from discord.ext import commands
 import asyncio
-import requests
 import re
 import os
-import threading
 from datetime import datetime, timedelta
+import requests
+from discord.ext import commands
 from bot_token import TOKEN
 
 
-bot = commands.Bot(command_prefix = '!')
+bot = commands.Bot(command_prefix='!')
 
 
 async def notification(timer):
     await asyncio.sleep(timer - 600)
     return "<@&677951688996421657>"
-        
 
 
 #On Message
@@ -23,7 +21,7 @@ async def notification(timer):
 async def on_message(message):
     if message.author == bot.user:
         return
-                                    
+
     if message.channel.id == 632291695202926593:
         if message.attachments:
             if message.attachments[0].filename[-4:] == ".lua":
@@ -48,9 +46,8 @@ async def buff(ctx, boss=None, time=None, am_pm=None):
     onytext = "No Current Onyxia Timer"
     rendtext = "No Current Rend Timer"
     neftext = "No Current Nefarian Timer"
-    
     newline = "\n"
-    
+
     if boss == None and time == None:
         with open("BuffTimers/onytimer.txt", "r") as f:
             ony_timer = f.read()
@@ -93,7 +90,6 @@ async def buff(ctx, boss=None, time=None, am_pm=None):
         return
 
 
-    
     ##Ony
     if boss.lower() == "ony" or boss.lower() == "onyxia" and time != None:
         if am_pm != None:
@@ -105,13 +101,13 @@ async def buff(ctx, boss=None, time=None, am_pm=None):
         end_time_str = end_time.strftime("%I:%M%p")
         time_diff = (end_time - now).total_seconds()
         print(round(time_diff))
-        
+
         with open("BuffTimers/ony.txt", "w") as f:
             f.write(f"Ony Buff Clocked At: {time} by {author}{newline}Ony Buff Off Cooldown At: {end_time_str}")
 
         with open("BuffTimers/onytimer.txt", "w") as f:
             f.write(str(end_time))
-            
+
         await ctx.send(f"Ony Buff Clocked At: {time} by {author}{newline}Ony Buff Off Cooldown At: {end_time_str}")
         result = await notification(time_diff)
         await ctx.send(f"{result} Ony Buff Off Cooldown In 10 Minutes!")
@@ -128,17 +124,17 @@ async def buff(ctx, boss=None, time=None, am_pm=None):
         end_time_str = end_time.strftime("%I:%M%p")
         time_diff = (end_time - now).total_seconds()
         print(round(time_diff))
-        
+
         with open("BuffTimers/rend.txt", "w") as f:
             f.write(f"Rend Buff Clocked At: {time} by {author}{newline}Rend Buff Off Cooldown At: {end_time_str}")
 
         with open("BuffTimers/rendtimer.txt", "w") as f:
             f.write(str(end_time))
-            
+
         await ctx.send(f"Rend Buff Clocked At: {time} by {author}{newline}Rend Buff Off Cooldown At: {end_time_str}")
         result = await notification(time_diff)
         await ctx.send(f"{result} Rend Buff Off Cooldown In 10 Minutes!")
-        
+
 
 
     ##Nef
@@ -152,19 +148,19 @@ async def buff(ctx, boss=None, time=None, am_pm=None):
         end_time_str = end_time.strftime("%I:%M%p")
         time_diff = (end_time - now).total_seconds()
         print(round(time_diff))
-        
+
         with open("BuffTimers/nef.txt", "w") as f:
             f.write(f"Nef Buff Clocked At: {time} by {author}{newline}Nef Buff Off Cooldown At: {end_time_str}")
 
         with open("BuffTimers/neftimer.txt", "w") as f:
             f.write(str(end_time))
-            
+
         await ctx.send(f"Nef Buff Clocked At: {time} by {author}{newline}Nef Buff Off Cooldown At: {end_time_str}")
         result = await notification(time_diff)
         await ctx.send(f"{result} Nef Buff Off Cooldown In 10 Minutes!")
 
 
-        
+
     ##Test
     if boss.lower() == "test" and time != None:
         now = datetime.now()
@@ -174,19 +170,19 @@ async def buff(ctx, boss=None, time=None, am_pm=None):
         end_time_str = end_time.strftime("%I:%M%p")
         time_diff = (end_time - now).total_seconds()
         print(round(time_diff))
-        
+
         with open("BuffTimers/test.txt", "w") as f:
             f.write(f"Test Buff Clocked At: {time} by {author}{newline}Test Buff Off Cooldown At: {end_time_str}")
 
         with open("BuffTimers/testtimer.txt", "w") as f:
             f.write(str(end_time))
-            
+
         await ctx.send(f"Test Buff Clocked At: {time} by {author}{newline}Test Buff Off Cooldown At: {end_time_str}")
         result = await notification(time_diff)
         await ctx.send(f"{result} Test Buff Off Cooldown In 10 Minutes!")
 
 
-    
+
 
 @bot.command()
 async def frank(ctx):
@@ -223,7 +219,7 @@ async def standings(ctx, classname='all', num=10):
             player_regex = re.compile(r'(?<=player"] = ")[^"]+')
             match = player_regex.search(block)
             player.append(match.group())
-            
+
             dkp_regex = re.compile(r'(?<="dkp"] = )[-]?[\d]+')
             match = dkp_regex.search(block)
             current.append(match.group())
@@ -232,9 +228,9 @@ async def standings(ctx, classname='all', num=10):
             match = class_regex.search(block)
             player_class.append(match.group())
 
-        
+
         if len(player) == len(current) and len(player) == len(player_class):
-            for i, nada in enumerate(player):
+            for i in range(len(player)):
                 while len(current[i]) < 3:
                     current[i] = f"0{current[i]}"
                 if classname == 'all' or classname.lower() in player_class[i].lower():
@@ -243,17 +239,17 @@ async def standings(ctx, classname='all', num=10):
         playerdkp = sorted(playerdkp, reverse=True)
 
         newline = "\n"
-            
+
         await ctx.send(f"""Table Updated: {str(modified)}\n```{newline.join(playerdkp[:num])}```""")
 
 
 
 
 
-    
+
 @bot.command()
 async def item(ctx, *, item):
-    item = item.replace('"','')
+    item = item.replace('"', '')
     if ctx.author.nick != None:
         print(f"{ctx.author.nick}: {ctx.message.content}")
     else:
@@ -270,7 +266,7 @@ async def item(ctx, *, item):
         lootblocks = []
         blocks = []
 
-        
+
         allblocks_regex = re.compile(r'{[^}]*}, -- \[[\d]+\]')
         allblocks = allblocks_regex.findall(text)
 
@@ -288,10 +284,10 @@ async def item(ctx, *, item):
                 loot_regex = re.compile(r"\[([A-z '])*\]")
                 match = loot_regex.search(line)
                 lootlist.append(match.group())
-                                                   
+
                 cost_regex = re.compile(r'(?<=cost"] = )[^,]+')
                 match = cost_regex.search(line)
-                costlist.append(match.group().replace("-",""))
+                costlist.append(match.group().replace("-", ""))
 
                 player_regex = re.compile(r'(?<=player"] = ")[^"]+')
                 match = player_regex.search(line)
@@ -304,25 +300,24 @@ async def item(ctx, *, item):
                 datelist.append(date)
             except AttributeError:
                 print("Attribute Error: NoneType object has no attribute 'group'")
-                pass
 
 
         data = []
-        for i, itemname in enumerate(lootlist):
+        for i in range(len(lootlist)):
 
             if len(costlist[i].strip()) < 2:
                 costlist[i] = f'0{costlist[i].strip()}'
-                
+
             while True:
                 if len(namelist[i]) < 12:
                     namelist[i] = namelist[i] + ' '
                 else:
                     break
-                
+
             if item.lower() in lootlist[i].lower():
                 data.append(f"DKP:{costlist[i].strip()}  {datelist[i]}  {namelist[i]}  {lootlist[i].strip()}")
 
-        
+
         data = "\n".join(data)
 
         if len(data) > 1950:
@@ -332,12 +327,12 @@ async def item(ctx, *, item):
             await ctx.send("Table Updated: " + str(modified) + "\n```" + data + "```")
         elif data == '':
             await ctx.send("No Items Found")
-        
-        
 
 
 
-        
+
+
+
 @bot.command()
 async def player(ctx, user):
     if ctx.author.nick != None:
@@ -366,7 +361,7 @@ async def player(ctx, user):
                         namelist.append(playername)
                     else:
                         continue
-                
+
                     loot_regex = re.compile(r"\[([A-z '])*\]")
                     match = loot_regex.search(i)
                     lootname = match.group()
@@ -387,8 +382,8 @@ async def player(ctx, user):
 
 
 
-    line =  []
-    for i,name in enumerate(namelist):
+    line = []
+    for i in range(len(namelist)):
         try:
             line.append(f"{costlist[i].strip()}dkp for {lootlist[i]} on {datelist[i]}")
         except IndexError:
@@ -402,7 +397,6 @@ async def player(ctx, user):
     lootlist = []
     costlist = []
     datelist = []
-    
 
 
 
@@ -417,22 +411,16 @@ async def dkp(ctx, user):
         modified = time.strftime('%m-%d-%y', time.localtime(int(modified)))
         current = []
         player_class = []
-        lifetime = []
         player = []
         spent = []
         dkpflag = 0
-        
+
         for line in f:
-            if "MonDKP_Loot" in line:
-                lootflag = 1
             if "MonDKP_DKPTable" in line:
                 dkpflag = 1
-                lootflag = 0
             if "MonDKP_DKPHistory" in line:
                 dkpflag = 0
-                historyflag = 1
-            if "MonDKP_MinBids" in line:
-                historyflag = 0
+
 
             if dkpflag == 1:
                 if '["dkp"]' in line:
@@ -454,11 +442,10 @@ async def dkp(ctx, user):
                         spent.append(match.group())
                     except AttributeError:
                         spent.append('0')
-                        pass
 
 
     newline = '\n'
-    for i, line in enumerate(player):   
+    for i, line in enumerate(player):
         if user.capitalize() in line:
             if int(current[i]) > 100:
                 estimated_decay = (int(current[i]) - 100) * 0.20
