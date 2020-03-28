@@ -469,7 +469,7 @@ async def quote(ctx):
 
 
 
-#Bot Ready
+
 @bot.event
 async def on_ready():
     print('Activating Bot')
