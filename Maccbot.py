@@ -12,6 +12,7 @@ bot = commands.Bot(command_prefix='!')
 
 
 async def notification(timer):
+    """async timer function for world buff notifications"""
     await asyncio.sleep(timer - 600)
     return "<@&677951688996421657>"
 
@@ -19,6 +20,7 @@ async def notification(timer):
 #On Message
 @bot.event
 async def on_message(message):
+    """Discord 'on_message' function"""
     if message.author == bot.user:
         return
 
@@ -26,7 +28,8 @@ async def on_message(message):
         if message.attachments:
             if message.attachments[0].filename[-4:] == ".lua":
                 await message.attachments[0].save(r"C:\PythonScripts\Maccbot\MonolithDKP.lua")
-                await message.channel.send(f"Updating Maccbot DKP Data from {message.author}'s {message.attachments[0].filename} file")
+                await message.channel.send(f"Updating DKP Data from {message.author}'s " +
+                                           f"{message.attachments[0].filename} file")
 
 
     await bot.process_commands(message)
@@ -35,7 +38,8 @@ async def on_message(message):
 
 @bot.command()
 async def buff(ctx, boss=None, time=None, am_pm=None):
-    if ctx.author.nick != None:
+    """Buff function to record a new world buff timer or display current logged timers"""
+    if ctx.author.nick is not None:
         author = ctx.author.nick
         print(f"{ctx.author.nick}: {ctx.message.content}")
     else:
@@ -48,7 +52,7 @@ async def buff(ctx, boss=None, time=None, am_pm=None):
     neftext = "No Current Nefarian Timer"
     newline = "\n"
 
-    if boss == None and time == None:
+    if boss is None and time is None:
         with open("BuffTimers/onytimer.txt", "r") as f:
             ony_timer = f.read()
             ony_timestamp = datetime.strptime(ony_timer, "%Y-%m-%d %H:%M:%S")
@@ -91,8 +95,8 @@ async def buff(ctx, boss=None, time=None, am_pm=None):
 
 
     ##Ony
-    if boss.lower() == "ony" or boss.lower() == "onyxia" and time != None:
-        if am_pm != None:
+    if boss.lower() == "ony" or boss.lower() == "onyxia" and time is not None:
+        if am_pm is not None:
             time = time + am_pm
         now = datetime.now()
         start_time = datetime.strptime(time, "%I:%M%p")
@@ -103,19 +107,21 @@ async def buff(ctx, boss=None, time=None, am_pm=None):
         print(round(time_diff))
 
         with open("BuffTimers/ony.txt", "w") as f:
-            f.write(f"Ony Buff Clocked At: {time} by {author}{newline}Ony Buff Off Cooldown At: {end_time_str}")
+            f.write(f"Ony Buff Clocked At: {time} by {author}{newline}"
+                    f"Ony Buff Off Cooldown At: {end_time_str}")
 
         with open("BuffTimers/onytimer.txt", "w") as f:
             f.write(str(end_time))
 
-        await ctx.send(f"Ony Buff Clocked At: {time} by {author}{newline}Ony Buff Off Cooldown At: {end_time_str}")
+        await ctx.send(f"Ony Buff Clocked At: {time} by {author}{newline}"
+                       f"Ony Buff Off Cooldown At: {end_time_str}")
         result = await notification(time_diff)
         await ctx.send(f"{result} Ony Buff Off Cooldown In 10 Minutes!")
 
 
     ##Rend
-    if boss.lower() == "rend" or boss.lower() == "wcb" and time != None:
-        if am_pm != None:
+    if boss.lower() == "rend" or boss.lower() == "wcb" and time is not None:
+        if am_pm is not None:
             time = time + am_pm
         now = datetime.now()
         start_time = datetime.strptime(time, "%I:%M%p")
@@ -126,20 +132,22 @@ async def buff(ctx, boss=None, time=None, am_pm=None):
         print(round(time_diff))
 
         with open("BuffTimers/rend.txt", "w") as f:
-            f.write(f"Rend Buff Clocked At: {time} by {author}{newline}Rend Buff Off Cooldown At: {end_time_str}")
+            f.write(f"Rend Buff Clocked At: {time} by {author}{newline}"
+                    f"Rend Buff Off Cooldown At: {end_time_str}")
 
         with open("BuffTimers/rendtimer.txt", "w") as f:
             f.write(str(end_time))
 
-        await ctx.send(f"Rend Buff Clocked At: {time} by {author}{newline}Rend Buff Off Cooldown At: {end_time_str}")
+        await ctx.send(f"Rend Buff Clocked At: {time} by {author}{newline}"
+                       f"Rend Buff Off Cooldown At: {end_time_str}")
         result = await notification(time_diff)
         await ctx.send(f"{result} Rend Buff Off Cooldown In 10 Minutes!")
 
 
 
     ##Nef
-    if boss.lower() == "nef" or boss.lower() == "nefarian" and time != None:
-        if am_pm != None:
+    if boss.lower() == "nef" or boss.lower() == "nefarian" and time is not None:
+        if am_pm is not None:
             time = time + am_pm
         now = datetime.now()
         start_time = datetime.strptime(time, "%I:%M%p")
@@ -150,19 +158,21 @@ async def buff(ctx, boss=None, time=None, am_pm=None):
         print(round(time_diff))
 
         with open("BuffTimers/nef.txt", "w") as f:
-            f.write(f"Nef Buff Clocked At: {time} by {author}{newline}Nef Buff Off Cooldown At: {end_time_str}")
+            f.write(f"Nef Buff Clocked At: {time} by {author}{newline}"
+                    f"Nef Buff Off Cooldown At: {end_time_str}")
 
         with open("BuffTimers/neftimer.txt", "w") as f:
             f.write(str(end_time))
 
-        await ctx.send(f"Nef Buff Clocked At: {time} by {author}{newline}Nef Buff Off Cooldown At: {end_time_str}")
+        await ctx.send(f"Nef Buff Clocked At: {time} by {author}{newline}"
+                       f"Nef Buff Off Cooldown At: {end_time_str}")
         result = await notification(time_diff)
         await ctx.send(f"{result} Nef Buff Off Cooldown In 10 Minutes!")
 
 
 
     ##Test
-    if boss.lower() == "test" and time != None:
+    if boss.lower() == "test" and time is not None:
         now = datetime.now()
         start_time = datetime.strptime(time, "%I:%M%p")
         start_time = start_time.replace(year=now.year, month=now.month, day=now.day)
@@ -172,12 +182,14 @@ async def buff(ctx, boss=None, time=None, am_pm=None):
         print(round(time_diff))
 
         with open("BuffTimers/test.txt", "w") as f:
-            f.write(f"Test Buff Clocked At: {time} by {author}{newline}Test Buff Off Cooldown At: {end_time_str}")
+            f.write(f"Test Buff Clocked At: {time} by {author}{newline}"
+                    f"Test Buff Off Cooldown At: {end_time_str}")
 
         with open("BuffTimers/testtimer.txt", "w") as f:
             f.write(str(end_time))
 
-        await ctx.send(f"Test Buff Clocked At: {time} by {author}{newline}Test Buff Off Cooldown At: {end_time_str}")
+        await ctx.send(f"Test Buff Clocked At: {time} by {author}{newline}"
+                       f"Test Buff Off Cooldown At: {end_time_str}")
         result = await notification(time_diff)
         await ctx.send(f"{result} Test Buff Off Cooldown In 10 Minutes!")
 
@@ -186,7 +198,8 @@ async def buff(ctx, boss=None, time=None, am_pm=None):
 
 @bot.command()
 async def frank(ctx):
-    if ctx.author.nick != None:
+    """Link Frank 'Motherboard Box' video"""
+    if ctx.author.nick is not None:
         print(f"{ctx.author.nick}: {ctx.message.content}")
     else:
         print(f"{ctx.author}: {ctx.message.content}")
@@ -195,7 +208,8 @@ async def frank(ctx):
 
 @bot.command()
 async def standings(ctx, classname='all', num=10):
-    if ctx.author.nick != None:
+    """Display DKP Standings. Default top 10 of all classes. Can specify class and number of rows"""
+    if ctx.author.nick is not None:
         print(f"{ctx.author.nick}: {ctx.message.content}")
     else:
         print(f"{ctx.author}: {ctx.message.content}")
@@ -234,7 +248,8 @@ async def standings(ctx, classname='all', num=10):
                 while len(current[i]) < 3:
                     current[i] = f"0{current[i]}"
                 if classname == 'all' or classname.lower() in player_class[i].lower():
-                    playerdkp.append(f"{current[i]}dkp - {player[i]} - {player_class[i].capitalize()}")
+                    playerdkp.append(f"{current[i]}dkp - {player[i]} - "
+                                     f"{player_class[i].capitalize()}")
 
         playerdkp = sorted(playerdkp, reverse=True)
 
@@ -249,8 +264,9 @@ async def standings(ctx, classname='all', num=10):
 
 @bot.command()
 async def item(ctx, *, item):
+    """Look up DKP history of specified item"""
     item = item.replace('"', '')
-    if ctx.author.nick != None:
+    if ctx.author.nick is not None:
         print(f"{ctx.author.nick}: {ctx.message.content}")
     else:
         print(f"{ctx.author}: {ctx.message.content}")
@@ -315,7 +331,8 @@ async def item(ctx, *, item):
                     break
 
             if item.lower() in lootlist[i].lower():
-                data.append(f"DKP:{costlist[i].strip()}  {datelist[i]}  {namelist[i]}  {lootlist[i].strip()}")
+                data.append(f"DKP:{costlist[i].strip()}  {datelist[i]}  "
+                            f"{namelist[i]}  {lootlist[i].strip()}")
 
 
         data = "\n".join(data)
@@ -335,7 +352,8 @@ async def item(ctx, *, item):
 
 @bot.command()
 async def player(ctx, user):
-    if ctx.author.nick != None:
+    """Check loot history of specified player"""
+    if ctx.author.nick is not None:
         print(f"{ctx.author.nick}: {ctx.message.content}")
     else:
         print(f"{ctx.author}: {ctx.message.content}")
@@ -390,7 +408,8 @@ async def player(ctx, user):
             pass
 
     if namelist != []:
-        await ctx.send(namelist[0] + "'s Loot History (Table Updated: " + str(modified) + ")\n```" + '\n'.join(line) + "```")
+        await ctx.send(namelist[0] + "'s Loot History (Table Updated: " +
+                       str(modified) + ")\n```" + '\n'.join(line) + "```")
     else:
         await ctx.send("No Player Found")
     namelist = []
@@ -402,7 +421,8 @@ async def player(ctx, user):
 
 @bot.command()
 async def dkp(ctx, user):
-    if ctx.author.nick != None:
+    """Check DKP of specified player"""
+    if ctx.author.nick is not None:
         print(f"{ctx.author.nick}: {ctx.message.content}")
     else:
         print(f"{ctx.author}: {ctx.message.content}")
@@ -451,7 +471,7 @@ async def dkp(ctx, user):
                 estimated_decay = round(estimated_decay)
             else:
                 estimated_decay = 0
-            await ctx.send(f"Table Updated: {str(modified)}{newline}```Player: {player[i].strip()}{newline}Class: {player_class[i].lower().capitalize().strip()}{newline}Current DKP: {current[i].strip()}{newline}DKP Spent: {spent[i].strip()}{newline}Estimated Decay: {estimated_decay}```") #{newline}Lifetime Earned: {lifetime[i]}{newline}Lifetime Decay: {lifetimedecay}
+            await ctx.send(f"Table Updated: {str(modified)}{newline}```Player: {player[i].strip()}{newline}Class: {player_class[i].lower().capitalize().strip()}{newline}Current DKP: {current[i].strip()}{newline}DKP Spent: {spent[i].strip()}{newline}Estimated Decay: {estimated_decay}```")
             return
 
     await ctx.send("No Player Found")
@@ -461,6 +481,7 @@ async def dkp(ctx, user):
 
 @bot.command()
 async def quote(ctx):
+    """Generate random Ron Swanson quote"""
     r = requests.get("https://ron-swanson-quotes.herokuapp.com/v2/quotes/1")
     data = r.json()
     for i in data:
@@ -471,6 +492,7 @@ async def quote(ctx):
 
 @bot.event
 async def on_ready():
+    """Discord 'on_ready' function"""
     print('Activating Bot')
     print('Name: ' + bot.user.name)
     print('ID: ' + str(bot.user.id))
