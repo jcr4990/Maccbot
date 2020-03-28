@@ -1,3 +1,6 @@
+from dataclasses import dataclass
+import lupa
+from lupa import LuaRuntime
 import time
 from discord.ext import commands
 import asyncio
@@ -5,7 +8,6 @@ import requests
 import re
 import os
 from datetime import datetime, timedelta
-from bot_token import TOKEN
 
 
 bot = commands.Bot(command_prefix = '!')
@@ -196,15 +198,56 @@ async def frank(ctx):
     await ctx.send('https://streamable.com/5he71')
 
 
+@dataclass
+class DKPEntry:
+    player: str
+    dkp: int
+    class_: str  # use enum?
+
+
+def get_dkp_table():
+    dkp_table = []
+
+    lua = LuaRuntime(unpack_returned_tuples=True)
+    with open("MonolithDKP.lua", "r") as f:
+        dkp_table_re = re.compile(r"MonDKP_DKPTable\s+=\s+?(.+?)(?=MonDKP_)", re.DOTALL)
+        m = dkp_table_re.search(f.read())
+        table = lua.eval(m.group(1))
+
+    for entry in table.values():
+        dkp_table.append(DKPEntry(player=entry["player"], dkp=entry["dkp"], class_=entry["class"]))
+
+    return dkp_table
+
+
 @bot.command()
 async def standings(ctx, classname='all', num=10):
     if ctx.author.nick != None:
         print(f"{ctx.author.nick}: {ctx.message.content}")
     else:
         print(f"{ctx.author}: {ctx.message.content}")
+
+    modified = os.path.getmtime(r"MonolithDKP.lua")
+    modified = time.strftime('%m-%d-%y', time.localtime(int(modified)))
+
+    newline = "\n"
+    await ctx.send(f"""Table Updated: {str(modified)}\n```{newline.join(standings_old())}```""")
+
+
+def standings_new(classname="all", num=10) -> List[str]:
+    def _format_dkp_entry(entry: DKPEntry) -> str:
+        return f"{entry.dkp:03}dkp - {entry.player} - {entry.class_.capitalize()}"
+
+    dkp_table = get_dkp_table()
+
+    if classname != 'all':
+        dkp_table = [x for x in dkp_table if x.class_.lower() == classname.lower()]
+
+    return sorted([_format_dkp_entry(e) for e in dkp_table], reverse=True)[:num]
+
+
+def standings_old(classname="all", num=10) -> List[str]:
     with open(r"MonolithDKP.lua", 'r') as f:
-        modified = os.path.getmtime(r"MonolithDKP.lua")
-        modified = time.strftime('%m-%d-%y', time.localtime(int(modified)))
         current = []
         player_class = []
         player = []
@@ -241,13 +284,7 @@ async def standings(ctx, classname='all', num=10):
 
         playerdkp = sorted(playerdkp, reverse=True)
 
-        newline = "\n"
-            
-        await ctx.send(f"""Table Updated: {str(modified)}\n```{newline.join(playerdkp[:num])}```""")
-
-
-
-
+    return playerdkp
 
     
 @bot.command()
@@ -484,7 +521,7 @@ async def on_ready():
     print('----------------')
 
 
+if __name__ == '__main__':
+    from bot_token import TOKEN
 
-
-
-bot.run(TOKEN)
+    bot.run(TOKEN)
