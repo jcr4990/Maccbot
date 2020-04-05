@@ -7,7 +7,7 @@ import requests
 from discord.ext import commands
 from bot_token import TOKEN
 
-
+##
 bot = commands.Bot(command_prefix='!')
 
 
@@ -17,7 +17,7 @@ async def notification(timer):
     return "<@&677951688996421657>"
 
 
-#On Message
+# On Message
 @bot.event
 async def on_message(message):
     """Discord 'on_message' function"""
@@ -31,9 +31,7 @@ async def on_message(message):
                 await message.channel.send(f"Updating DKP Data from {message.author}'s " +
                                            f"{message.attachments[0].filename} file")
 
-
     await bot.process_commands(message)
-
 
 
 @bot.command()
@@ -61,7 +59,6 @@ async def buff(ctx, boss=None, time=None, am_pm=None):
                 with open("BuffTimers/ony.txt", "r") as f:
                     onytext = f.read()
 
-
         with open("BuffTimers/rendtimer.txt", "r") as f:
             rend_timer = f.read()
             rend_timestamp = datetime.strptime(rend_timer, "%Y-%m-%d %H:%M:%S")
@@ -78,7 +75,6 @@ async def buff(ctx, boss=None, time=None, am_pm=None):
                 with open("BuffTimers/nef.txt", "r") as f:
                     neftext = f.read()
 
-
         with open("BuffTimers/testtimer.txt", "r") as f:
             test_timer = f.read()
             test_timestamp = datetime.strptime(test_timer, "%Y-%m-%d %H:%M:%S")
@@ -87,20 +83,18 @@ async def buff(ctx, boss=None, time=None, am_pm=None):
                 with open("BuffTimers/test.txt", "r") as f:
                     testtext = f.read()
 
-
         if ctx.guild.id == 569551162618019841:
             await ctx.send(testtext)
         await ctx.send(f"{onytext}{newline * 2}{neftext}{newline * 2}{rendtext}")
         return
-
-
-    ##Ony
+    # Ony
     if boss.lower() == "ony" or boss.lower() == "onyxia" and time is not None:
         if am_pm is not None:
             time = time + am_pm
         now = datetime.now()
         start_time = datetime.strptime(time, "%I:%M%p")
-        start_time = start_time.replace(year=now.year, month=now.month, day=now.day)
+        start_time = start_time.replace(
+            year=now.year, month=now.month, day=now.day)
         end_time = start_time + timedelta(hours=6)
         end_time_str = end_time.strftime("%I:%M%p")
         time_diff = (end_time - now).total_seconds()
@@ -117,15 +111,14 @@ async def buff(ctx, boss=None, time=None, am_pm=None):
                        f"Ony Buff Off Cooldown At: {end_time_str}")
         result = await notification(time_diff)
         await ctx.send(f"{result} Ony Buff Off Cooldown In 10 Minutes!")
-
-
-    ##Rend
+    # Rend
     if boss.lower() == "rend" or boss.lower() == "wcb" and time is not None:
         if am_pm is not None:
             time = time + am_pm
         now = datetime.now()
         start_time = datetime.strptime(time, "%I:%M%p")
-        start_time = start_time.replace(year=now.year, month=now.month, day=now.day)
+        start_time = start_time.replace(
+            year=now.year, month=now.month, day=now.day)
         end_time = start_time + timedelta(hours=3)
         end_time_str = end_time.strftime("%I:%M%p")
         time_diff = (end_time - now).total_seconds()
@@ -142,16 +135,14 @@ async def buff(ctx, boss=None, time=None, am_pm=None):
                        f"Rend Buff Off Cooldown At: {end_time_str}")
         result = await notification(time_diff)
         await ctx.send(f"{result} Rend Buff Off Cooldown In 10 Minutes!")
-
-
-
-    ##Nef
+    # Nef
     if boss.lower() == "nef" or boss.lower() == "nefarian" and time is not None:
         if am_pm is not None:
             time = time + am_pm
         now = datetime.now()
         start_time = datetime.strptime(time, "%I:%M%p")
-        start_time = start_time.replace(year=now.year, month=now.month, day=now.day)
+        start_time = start_time.replace(
+            year=now.year, month=now.month, day=now.day)
         end_time = start_time + timedelta(hours=8)
         end_time_str = end_time.strftime("%I:%M%p")
         time_diff = (end_time - now).total_seconds()
@@ -168,14 +159,12 @@ async def buff(ctx, boss=None, time=None, am_pm=None):
                        f"Nef Buff Off Cooldown At: {end_time_str}")
         result = await notification(time_diff)
         await ctx.send(f"{result} Nef Buff Off Cooldown In 10 Minutes!")
-
-
-
-    ##Test
+    # Test
     if boss.lower() == "test" and time is not None:
         now = datetime.now()
         start_time = datetime.strptime(time, "%I:%M%p")
-        start_time = start_time.replace(year=now.year, month=now.month, day=now.day)
+        start_time = start_time.replace(
+            year=now.year, month=now.month, day=now.day)
         end_time = start_time + timedelta(hours=1)
         end_time_str = end_time.strftime("%I:%M%p")
         time_diff = (end_time - now).total_seconds()
@@ -192,8 +181,6 @@ async def buff(ctx, boss=None, time=None, am_pm=None):
                        f"Test Buff Off Cooldown At: {end_time_str}")
         result = await notification(time_diff)
         await ctx.send(f"{result} Test Buff Off Cooldown In 10 Minutes!")
-
-
 
 
 @bot.command()
@@ -221,7 +208,8 @@ async def standings(ctx, classname='all', num=10):
         player = []
         playerdkp = []
         file = f.read()
-        dkp_table_regex = re.compile(r"MonDKP_DKPTable.+?(?=MonDKP_)", re.DOTALL)
+        dkp_table_regex = re.compile(
+            r"MonDKP_DKPTable.+?(?=MonDKP_)", re.DOTALL)
         mo = dkp_table_regex.search(file)
         dkptable = mo.group()
         blocks = dkptable.split("{")
@@ -242,7 +230,6 @@ async def standings(ctx, classname='all', num=10):
             match = class_regex.search(block)
             player_class.append(match.group())
 
-
         if len(player) == len(current) and len(player) == len(player_class):
             for i, _ in enumerate(player):
                 while len(current[i]) < 3:
@@ -256,10 +243,6 @@ async def standings(ctx, classname='all', num=10):
         newline = "\n"
 
         await ctx.send(f"""Table Updated: {str(modified)}\n```{newline.join(playerdkp[:num])}```""")
-
-
-
-
 
 
 @bot.command()
@@ -281,7 +264,6 @@ async def item(ctx, *, item):
         data = []
         lootblocks = []
         blocks = []
-
 
         allblocks_regex = re.compile(r'{[^}]*}, -- \[[\d]+\]')
         allblocks = allblocks_regex.findall(text)
@@ -312,11 +294,11 @@ async def item(ctx, *, item):
                 date_regex = re.compile(r'(?<=date"] = )[\d]+')
                 match = date_regex.search(line)
                 epoch = match.group()
-                date = time.strftime('%m/%d', time.localtime(int(epoch))) # %I:%M:%S
+                date = time.strftime(
+                    '%m/%d', time.localtime(int(epoch)))  # %I:%M:%S
                 datelist.append(date)
             except AttributeError:
                 print("Attribute Error: NoneType object has no attribute 'group'")
-
 
         data = []
         for i, _ in enumerate(lootlist):
@@ -334,7 +316,6 @@ async def item(ctx, *, item):
                 data.append(f"DKP:{costlist[i].strip()}  {datelist[i]}  "
                             f"{namelist[i]}  {lootlist[i].strip()}")
 
-
         data = "\n".join(data)
 
         if len(data) > 1950:
@@ -344,10 +325,6 @@ async def item(ctx, *, item):
             await ctx.send("Table Updated: " + str(modified) + "\n```" + data + "```")
         elif data == '':
             await ctx.send("No Items Found")
-
-
-
-
 
 
 @bot.command()
@@ -393,17 +370,17 @@ async def player(ctx, user):
                     date_regex = re.compile(r'(?<=date"] = )[\d]+')
                     match = date_regex.search(i)
                     epoch = match.group()
-                    date = time.strftime('%m-%d-%y', time.localtime(int(epoch))) # %I:%M:%S
+                    date = time.strftime(
+                        '%m-%d-%y', time.localtime(int(epoch)))  # %I:%M:%S
                     datelist.append(date)
                 except AttributeError:
                     pass
 
-
-
     line = []
     for i in range(len(namelist)):
         try:
-            line.append(f"{costlist[i].strip()}dkp for {lootlist[i]} on {datelist[i]}")
+            line.append(
+                f"{costlist[i].strip()}dkp for {lootlist[i]} on {datelist[i]}")
         except IndexError:
             pass
 
@@ -416,7 +393,6 @@ async def player(ctx, user):
     lootlist = []
     costlist = []
     datelist = []
-
 
 
 @bot.command()
@@ -462,7 +438,6 @@ async def dkp(ctx, user):
                     except AttributeError:
                         spent.append('0')
 
-
     newline = '\n'
     for i, line in enumerate(player):
         if user.capitalize() in line:
@@ -477,8 +452,6 @@ async def dkp(ctx, user):
     await ctx.send("No Player Found")
 
 
-
-
 @bot.command()
 async def quote(ctx):
     """Generate random Ron Swanson quote"""
@@ -488,8 +461,6 @@ async def quote(ctx):
         await ctx.send(f'"{i}" -Ron Swanson')
 
 
-
-
 @bot.event
 async def on_ready():
     """Discord 'on_ready' function"""
@@ -497,9 +468,6 @@ async def on_ready():
     print('Name: ' + bot.user.name)
     print('ID: ' + str(bot.user.id))
     print('----------------')
-
-
-
 
 
 bot.run(TOKEN)
