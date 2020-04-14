@@ -5,11 +5,13 @@ import os
 from datetime import datetime, timedelta
 import requests
 from discord.ext import commands
+import discord
 from bot_token import TOKEN
 
 bot = commands.Bot(command_prefix='!')
+bot.remove_command("help")
 
-## Test
+
 async def notification(timer):
     """async timer function for world buff notifications"""
     await asyncio.sleep(timer - 600)
@@ -31,6 +33,30 @@ async def on_message(message):
                                            f"{message.attachments[0].filename} file")
 
     await bot.process_commands(message)
+
+
+@bot.command()
+async def help(ctx):
+    author = ctx.message.author
+    embed = discord.Embed(color=discord.Color.green())
+    embed.set_author(name="Commands:")
+    embed.add_field(
+        name="!help", value="View list / description of available commands", inline=False)
+    embed.add_field(
+        name="!buff", value="Used by itself will display any active buff timers logged to Maccbot. To record a buff dropping use the following format without quotation marks: '!buff ony 12:30pm' can be used for Ony Nef or Rend.", inline=False)
+    embed.add_field(
+        name="!frank", value="Links the infamous 'Motherboard Box' Frank video", inline=False)
+    embed.add_field(
+        name="!standings", value="Used by itself will list top 10 current DKP of any class. Can specify class and number of players to list like so: !standings warrior 12 to view top 12 warriors OR !standings all 30 to view top 30 all classes", inline=False)
+    embed.add_field(
+        name="!item _____", value="Use to look up DKP history of specified item", inline=False)
+    embed.add_field(
+        name="!player _____", value="Use to look up loot history of specified player", inline=False)
+    embed.add_field(
+        name="!dkp _____", value="Use to look up current and total spent DKP of specified player", inline=False)
+    embed.add_field(
+        name="!quote", value="Generate random Ron Swanson quote", inline=False)
+    await author.send(embed=embed)
 
 
 @bot.command()
