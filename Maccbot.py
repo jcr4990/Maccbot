@@ -37,9 +37,10 @@ async def on_message(message):
 
 @bot.command()
 async def help(ctx):
+    """Help function to list available commands and descriptions"""
     author = ctx.message.author
     embed = discord.Embed(color=discord.Color.green())
-    embed.set_author(name="Commands:")
+    embed.set_author(name="Maccbot Commands:")
     embed.add_field(
         name="!help", value="View list / description of available commands", inline=False)
     embed.add_field(
@@ -57,6 +58,57 @@ async def help(ctx):
     embed.add_field(
         name="!quote", value="Generate random Ron Swanson quote", inline=False)
     await author.send(embed=embed)
+
+
+@bot.command()
+async def whatdropped(ctx, input_date):
+    """Look up what items dropped on raid by date using mm/dd/yy format"""
+    if ctx.author.nick is not None:
+        print(f"{ctx.author.nick}: {ctx.message.content}")
+    else:
+        print(f"{ctx.author}: {ctx.message.content}")
+
+    modified = os.path.getmtime(r"MonolithDKP.lua")
+    modified = time.strftime('%m-%d-%y', time.localtime(int(modified)))
+    input_date = input_date.split(r"/")
+    for i, sec in enumerate(input_date):
+        if len(sec) < 2:
+            input_date[i] = "0" + sec
+    input_date = r"/".join(input_date)
+
+    with open(r"MonolithDKP.lua", 'r') as f:
+        text = f.read()
+
+        blocks_regex = re.compile(r'{[^}]*}, -- \[[\d]+\]')
+        blocks = blocks_regex.findall(text)
+        drops = []
+
+        for block in blocks:
+            if "date" in block and "loot" in block:
+                try:
+                    date_regex = re.compile(r'(?<=date"] = )[\d]+')
+                    match = date_regex.search(block)
+                    epoch = match.group()
+                    block_date = time.strftime(
+                        '%m/%d/%y', time.localtime(int(epoch)))
+
+                    if block_date == input_date:
+                        loot_regex = re.compile(r"\[([A-z '])*\]")
+                        loot = loot_regex.search(block).group()
+
+                        player_regex = re.compile(r'(?<=player"] = ")[^"]+')
+                        player = player_regex.search(block).group()
+
+                        cost_regex = re.compile(r'(?<=cost"] = )[^,]+')
+                        cost = cost_regex.search(block).group()
+
+                        drops.append(f"{loot} to {player} {cost}dkp")
+                except AttributeError:
+                    pass
+
+    drops = "\n".join(drops)
+
+    await ctx.send(f"Updated: {str(modified)}\n```{drops}```")
 
 
 @bot.command()
