@@ -61,7 +61,7 @@ async def help(ctx):
 
 
 @bot.command()
-async def whatdropped(ctx, input_date):
+async def whatdropped(ctx, input_date=r"00/00/00"):
     """Look up what items dropped on raid by date using mm/dd/yy format"""
     if ctx.author.nick is not None:
         print(f"{ctx.author.nick}: {ctx.message.content}")
@@ -92,6 +92,9 @@ async def whatdropped(ctx, input_date):
                     block_date = time.strftime(
                         '%m/%d/%y', time.localtime(int(epoch)))
 
+                    if input_date == r"00/00/00":
+                        input_date = block_date
+
                     if block_date == input_date:
                         loot_regex = re.compile(r"\[([A-z '])*\]")
                         loot = loot_regex.search(block).group()
@@ -108,7 +111,7 @@ async def whatdropped(ctx, input_date):
 
     drops = "\n".join(drops)
 
-    await ctx.send(f"Updated: {str(modified)}\n```{drops}```")
+    await ctx.send(f"DKP File Updated: {str(modified)}\nLoot From: {input_date}\n```{drops}```")
 
 
 @bot.command()
