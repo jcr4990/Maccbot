@@ -96,7 +96,7 @@ async def whatdropped(ctx, input_date=r"00/00/00"):
                         input_date = block_date
 
                     if block_date == input_date:
-                        loot_regex = re.compile(r"\[([A-z '])*\]")
+                        loot_regex = re.compile(r"\[([A-z ',])*\]")
                         loot = loot_regex.search(block).group()
 
                         player_regex = re.compile(r'(?<=player"] = ")[^"]+')
@@ -359,7 +359,7 @@ async def item(ctx, *, item):
 
         for line in lootblocks:
             try:
-                loot_regex = re.compile(r"\[([A-z '])*\]")
+                loot_regex = re.compile(r"\[([A-z ',])*\]")
                 match = loot_regex.search(line)
                 lootlist.append(match.group())
 
@@ -437,7 +437,7 @@ async def player(ctx, user):
                     else:
                         continue
 
-                    loot_regex = re.compile(r"\[([A-z '])*\]")
+                    loot_regex = re.compile(r"\[([A-z ',])*\]")
                     match = loot_regex.search(i)
                     lootname = match.group()
                     lootlist.append(lootname)
