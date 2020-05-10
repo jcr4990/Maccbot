@@ -2,6 +2,7 @@ import time
 import asyncio
 import re
 import os
+import random
 from datetime import datetime, timedelta
 import requests
 from discord.ext import commands
@@ -10,6 +11,46 @@ from bot_token import TOKEN
 
 bot = commands.Bot(command_prefix='!')
 bot.remove_command("help")
+
+def active_check():
+    """Check Active Players"""
+    with open(r"MonolithDKP.lua", 'r') as f:
+        file = f.read()
+        dkp_history_regex = re.compile(
+            r"MonDKP_DKPHistory.+?(?=MonDKP_)", re.DOTALL)
+        mo = dkp_history_regex.search(file)
+        dkphistory = mo.group()
+        blocks = dkphistory.split("{")
+        now = datetime.now()
+        active_players = []
+
+        for block in blocks:
+            if "Time Interval" not in block:
+                continue
+            date_regex = re.compile(r'(?<=date"] = )[\d]+')
+            mo = date_regex.search(block)
+            try:
+                epoch = mo.group()
+                block_date = datetime.fromtimestamp(int(epoch))
+            except AttributeError:
+                continue
+
+            if (now - block_date).days < 30:
+                if "player" in block:
+                    player_regex = re.compile(r'(?<=players"] = ")[^"]+')
+                    mo = player_regex.search(block)
+                    playerlist = mo.group()
+                    print(block_date)
+
+                    for i in playerlist.split(","):
+                        active_players.append(i)
+
+    return active_players
+
+                
+
+            
+
 
 
 async def notification(timer):
@@ -60,6 +101,21 @@ async def help(ctx):
     await author.send(embed=embed)
 
 
+@bot.command(aliases=['dr'])
+async def deathroll(ctx, roll_num=100):
+    roll = random.randint(1, roll_num)
+
+    if roll == 1:
+        await ctx.send(f"{roll} - YOU LOSE")
+    else:
+        await ctx.send(roll)
+    
+    
+
+
+
+
+    
 @bot.command()
 async def whatdropped(ctx, input_date=r"00/00/00"):
     """Look up what items dropped on raid by date using mm/dd/yy format"""
@@ -293,14 +349,17 @@ async def standings(ctx, classname='all', num=10):
         mo = dkp_table_regex.search(file)
         dkptable = mo.group()
         blocks = dkptable.split("{")
+        active_players = active_check()
 
         for block in blocks:
             if "player" not in block or '"dkp"' not in block:
                 continue
 
             player_regex = re.compile(r'(?<=player"] = ")[^"]+')
-            match = player_regex.search(block)
-            player.append(match.group())
+            match = player_regex.search(block).group()
+            if match not in active_players:
+                continue
+            player.append(match)
 
             dkp_regex = re.compile(r'(?<="dkp"] = )[-]?[\d]+')
             match = dkp_regex.search(block)
